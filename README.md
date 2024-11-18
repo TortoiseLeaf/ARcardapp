@@ -23,3 +23,5 @@ then push those changes to your branch.
 You now have the latest version of `dev` on your branch and are ready to merge! 
 
 Merge your branch into `dev` and someone will review it in a pull request.
+
+**important:** remember to delete the branch when it's no longer needed.
