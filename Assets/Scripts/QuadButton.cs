@@ -22,14 +22,14 @@ public class QuadButton : MonoBehaviour
 {
     void Update()
     {
-        if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
+        if (Input.GetMouseButtonDown(0)) // Detect touch or left mouse button
         {
-            Ray ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); // Ray from screen to world
             if (Physics.Raycast(ray, out RaycastHit hit))
             {
-                if (hit.transform == transform)
+                if (hit.transform == transform) // Check if this quad was hit
                 {
-                    Debug.Log("Quad pressed via touch!");
+                    Debug.Log("Quad pressed via mouse/touch!");
                 }
             }
         }
