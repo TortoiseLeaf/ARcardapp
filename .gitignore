@@ -48,7 +48,8 @@ ExportedObj/
 *.VC.db
 
 # *.tgz
-
+# env credentials
+*.env
 # Unity3D generated meta files
 *.pidb.meta
 *.pdb.meta
