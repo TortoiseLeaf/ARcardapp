@@ -41,6 +41,8 @@ public class ButtonClick : MonoBehaviour, IPointerClickHandler, IPointerDownHand
     public void OnPointerClick(PointerEventData data)
     {
         Debug.Log("Quad pressed via mouse/touch");
+        GetComponent<Renderer>().material.color = Color.red; // Change color to red
+        Debug.Log("Quad was touched!");
     }
 
     public void OnPointerUp(PointerEventData data)
