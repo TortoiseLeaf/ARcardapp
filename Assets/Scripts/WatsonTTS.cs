@@ -37,6 +37,8 @@ public class WatsonTTS : MonoBehaviour
             string audioFilePath = Path.Combine(Application.persistentDataPath, "synthetized_audio.wav");
 
             File.WriteAllBytes(audioFilePath, convertedAudioData);
+
+            Debug.Log("Audio saved");
             
         }
         
