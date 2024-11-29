@@ -1,14 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.Networking;
 
 public class WatsonTTS : MonoBehaviour
 {
     [SerializeField] private string _apiKey = "";
-    [SerializeField] private string _apiUrl = "";
-    
-
+    [SerializeField] private string _apiUrl = "";   
 
     // Start is called before the first frame update
     void Start()
@@ -22,6 +21,7 @@ public class WatsonTTS : MonoBehaviour
         
         www.SetRequestHeader("Authorization", "Basic " + System.Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes("apikey:" + _apiKey)));
         www.SetRequestHeader("Accept", "audio/wav");
+
         yield return www.SendWebRequest();
 
         if (www.result != UnityWebRequest.Result.Success)
@@ -30,7 +30,14 @@ public class WatsonTTS : MonoBehaviour
         }
         else
         {
-            Debug.Log("Form upload complete!");
+            Debug.Log("Downloading Audio");
+
+            byte[] convertedAudioData = www.downloadHandler.data;
+
+            string audioFilePath = Path.Combine(Application.persistentDataPath, "synthetized_audio.wav");
+
+            File.WriteAllBytes(audioFilePath, convertedAudioData);
+            
         }
         
     }
