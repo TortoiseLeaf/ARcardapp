@@ -4,8 +4,10 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 
-public class ButtonClick : MonoBehaviour, IPointerClickHandler, IPointerDownHandler, IPointerUpHandler
+public class ButtonClick : MonoBehaviour, IPointerClickHandler //, IPointerDownHandler, IPointerUpHandler
 {
+    public LinkedInAPI linkedInApi;
+
     // Update is called once per frame
     void Update()
     {
@@ -30,6 +32,7 @@ public class ButtonClick : MonoBehaviour, IPointerClickHandler, IPointerDownHand
     }
 
 
+
     void OnQuadTouch()
     {
         GetComponent<Renderer>().material.color = Color.red; // Change color to red
@@ -42,9 +45,18 @@ public class ButtonClick : MonoBehaviour, IPointerClickHandler, IPointerDownHand
     {
         Debug.Log("Quad pressed via mouse/touch");
         GetComponent<Renderer>().material.color = Color.red; // Change color to red
-        Debug.Log("Quad was touched!");
+
+        if (linkedInApi != null)
+        {
+            linkedInApi.FetchLinkedInProfile();
+        }
+        else
+        {
+            Debug.LogError("LinkedInAPI reference is missing!");
+        }
     }
 
+    /*
     public void OnPointerUp(PointerEventData data)
     {
         Debug.Log("Pointer Up pressed.");
@@ -53,5 +65,5 @@ public class ButtonClick : MonoBehaviour, IPointerClickHandler, IPointerDownHand
     public void OnPointerDown(PointerEventData data)
     {
         Debug.Log("Pointer Down pressed.");
-    }
+    }*/
 }
