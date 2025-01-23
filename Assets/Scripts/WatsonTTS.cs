@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -34,10 +36,14 @@ public class WatsonTTS : MonoBehaviour
 
             byte[] audioData = www.downloadHandler.data;
             
+             // Diagnostic logging of raw audio data
+            Debug.Log($"Received audio data length: {audioData.Length}");
+            Debug.Log($"First 20 bytes of audio data: {BitConverter.ToString(audioData.Take(20).ToArray())}");
+
             string audioFilePath = Path.Combine(Application.persistentDataPath, "synthetized_audio.wav");
 
             // Save the downloaded audio file
-            byte[] wavData = AddWavHeader(audioData, 44100, 1, 16);
+            byte[] wavData = CreateWavHeader(audioData, 44100, 1, 16);
             File.WriteAllBytes(audioFilePath, wavData);        
 
             Debug.Log($"Audio saved at {audioFilePath}");
@@ -48,9 +54,18 @@ public class WatsonTTS : MonoBehaviour
         }
     }
 
-    private byte[] AddWavHeader(byte[] pcmData, int sampleRate, int channels, int bitsPerSample)
+     private byte[] CreateWavHeader(byte[] pcmData, int sampleRate, int channels, int bitsPerSample)
     {
+        // Ensure 16-bit PCM format
+        if (bitsPerSample != 16)
+        {
+            Debug.LogWarning("Bits per sample must be 16. Adjusting.");
+            bitsPerSample = 16;
+        }
+
+        // Calculate various audio parameters
         int byteRate = sampleRate * channels * (bitsPerSample / 8);
+        int blockAlign = channels * (bitsPerSample / 8);
         int subchunk2Size = pcmData.Length;
         int chunkSize = 36 + subchunk2Size;
 
@@ -59,24 +74,24 @@ public class WatsonTTS : MonoBehaviour
             using (BinaryWriter writer = new BinaryWriter(memoryStream))
             {
                 // RIFF header
-                writer.Write(new[] { 'R', 'I', 'F', 'F' }); // Chunk ID
-                writer.Write(chunkSize); // Chunk size
-                writer.Write(new[] { 'W', 'A', 'V', 'E' }); // Format
+                writer.Write(System.Text.Encoding.ASCII.GetBytes("RIFF"));
+                writer.Write(chunkSize);
+                writer.Write(System.Text.Encoding.ASCII.GetBytes("WAVE"));
 
                 // fmt subchunk
-                writer.Write(new[] { 'f', 'm', 't', ' ' }); // Subchunk1 ID
+                writer.Write(System.Text.Encoding.ASCII.GetBytes("fmt "));
                 writer.Write(16); // Subchunk1 size
                 writer.Write((short)1); // Audio format (PCM)
-                writer.Write((short)channels); // Number of channels
-                writer.Write(sampleRate); // Sample rate
-                writer.Write(byteRate); // Byte rate
-                writer.Write((short)(channels * (bitsPerSample / 8))); // Block align
-                writer.Write((short)bitsPerSample); // Bits per sample
+                writer.Write((short)channels);
+                writer.Write(sampleRate);
+                writer.Write(byteRate);
+                writer.Write((short)blockAlign);
+                writer.Write((short)bitsPerSample);
 
                 // data subchunk
-                writer.Write(new[] { 'd', 'a', 't', 'a' }); // Subchunk2 ID
-                writer.Write(subchunk2Size); // Subchunk2 size
-                writer.Write(pcmData); // PCM data
+                writer.Write(System.Text.Encoding.ASCII.GetBytes("data"));
+                writer.Write(subchunk2Size);
+                writer.Write(pcmData);
             }
 
             return memoryStream.ToArray();
