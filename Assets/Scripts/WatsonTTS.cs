@@ -18,7 +18,7 @@ public class WatsonTTS : MonoBehaviour
     IEnumerator SynthesizeAndDownloadAudio()
     {
         // Create a POST request to the Watson TTS API
-        UnityWebRequest www = UnityWebRequest.Post(_apiUrl, "{ \"text\": \" Watson should say squiggle \"}", "application/json");
+        UnityWebRequest www = UnityWebRequest.Post(_apiUrl, "{ \"text\": \" Watson test \"}", "application/json");
         www.SetRequestHeader("Authorization", "Basic " + System.Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes("apikey:" + _apiKey)));
         www.SetRequestHeader("Accept", "audio/wav;codec=pcm;rate=44100");
 
