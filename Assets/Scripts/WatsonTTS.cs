@@ -1,51 +1,100 @@
+using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Networking;
 
 public class WatsonTTS : MonoBehaviour
 {
     [SerializeField] private string _apiKey = "";
-    [SerializeField] private string _apiUrl = "";   
+    [SerializeField] private string _apiUrl = "";
 
-    // Start is called before the first frame update
-    void Start()
+    public AudioPlayer audioPlayer;
+    void Awake()
     {
-        StartCoroutine(Upload());
+        audioPlayer = GetComponent<AudioPlayer>();
+        StartCoroutine(SynthesizeAndDownloadAudio());
     }
 
-    IEnumerator Upload()
+    IEnumerator SynthesizeAndDownloadAudio()
     {
-        UnityWebRequest www = UnityWebRequest.Post(_apiUrl, "{ \"text\": \" Watson test \"}", "application/json");        
-        
+        // Create a POST request to the Watson TTS API
+        UnityWebRequest www = UnityWebRequest.Post(_apiUrl, "{ \"text\": \" Watson test \"}", "application/json");
         www.SetRequestHeader("Authorization", "Basic " + System.Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes("apikey:" + _apiKey)));
-        www.SetRequestHeader("Accept", "audio/wav");
+        www.SetRequestHeader("Accept", "audio/wav;codec=pcm;rate=44100");
 
         yield return www.SendWebRequest();
 
         if (www.result != UnityWebRequest.Result.Success)
         {
-            Debug.LogError(www.error);
+            Debug.LogError($"Error downloading audio: {www.error}");
         }
         else
         {
-            Debug.Log("Downloading Audio");
+            Debug.Log("Downloading audio...");
 
-            byte[] convertedAudioData = www.downloadHandler.data;
+            byte[] audioData = www.downloadHandler.data;
+            
+             // Diagnostic logging of raw audio data
+            Debug.Log($"Received audio data length: {audioData.Length}");
+            Debug.Log($"First 20 bytes of audio data: {BitConverter.ToString(audioData.Take(20).ToArray())}");
 
             string audioFilePath = Path.Combine(Application.persistentDataPath, "synthetized_audio.wav");
 
-            File.WriteAllBytes(audioFilePath, convertedAudioData);
+            // Save the downloaded audio file
+            byte[] wavData = CreateWavHeader(audioData, 44100, 1, 16);
+            File.WriteAllBytes(audioFilePath, wavData);        
 
-            Debug.Log("Audio saved");
-            
+            Debug.Log($"Audio saved at {audioFilePath}");
+
+            // Start the coroutine to play the saved audio file
+            Debug.Log("Starting PlayAudio coroutine...");
+            StartCoroutine(audioPlayer.PlayAudio(audioFilePath));
         }
-        
     }
-    // // Update is called once per frame
-    // void Update()
-    // {
-        
-    // }
+
+     private byte[] CreateWavHeader(byte[] pcmData, int sampleRate, int channels, int bitsPerSample)
+    {
+        // Ensure 16-bit PCM format
+        if (bitsPerSample != 16)
+        {
+            Debug.LogWarning("Bits per sample must be 16. Adjusting.");
+            bitsPerSample = 16;
+        }
+
+        // Calculate various audio parameters
+        int byteRate = sampleRate * channels * (bitsPerSample / 8);
+        int blockAlign = channels * (bitsPerSample / 8);
+        int subchunk2Size = pcmData.Length;
+        int chunkSize = 36 + subchunk2Size;
+
+        using (MemoryStream memoryStream = new MemoryStream())
+        {
+            using (BinaryWriter writer = new BinaryWriter(memoryStream))
+            {
+                // RIFF header
+                writer.Write(System.Text.Encoding.ASCII.GetBytes("RIFF"));
+                writer.Write(chunkSize);
+                writer.Write(System.Text.Encoding.ASCII.GetBytes("WAVE"));
+
+                // fmt subchunk
+                writer.Write(System.Text.Encoding.ASCII.GetBytes("fmt "));
+                writer.Write(16); // Subchunk1 size
+                writer.Write((short)1); // Audio format (PCM)
+                writer.Write((short)channels);
+                writer.Write(sampleRate);
+                writer.Write(byteRate);
+                writer.Write((short)blockAlign);
+                writer.Write((short)bitsPerSample);
+
+                // data subchunk
+                writer.Write(System.Text.Encoding.ASCII.GetBytes("data"));
+                writer.Write(subchunk2Size);
+                writer.Write(pcmData);
+            }
+
+            return memoryStream.ToArray();
+        }
+    }
 }
