@@ -67,6 +67,10 @@ sysinfo.txt
 # Crashlytics generated file
 crashlytics-build.properties
 
+# api credentials 
+credentials.json
+credentials.json.meta
+
 # Packed Addressables
 /[Aa]ssets/[Aa]ddressable[Aa]ssets[Dd]ata/*/*.bin*
 
