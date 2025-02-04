@@ -7,21 +7,46 @@ using UnityEngine.Networking;
 
 public class WatsonTTS : MonoBehaviour
 {
-    [SerializeField] private string _apiKey = "";
-    [SerializeField] private string _apiUrl = "";
+    private WatsonCredentials watsonCredentials;
+    private string credentialsFilePath;
 
     public AudioPlayer audioPlayer;
     void Awake()
     {
+        //get and set paths for credentials and api response
+        credentialsFilePath = Path.Combine(Application.streamingAssetsPath, "credentials.json");
+        LoadCredentials();
         audioPlayer = GetComponent<AudioPlayer>();
         StartCoroutine(SynthesizeAndDownloadAudio());
+    }
+
+    private void LoadCredentials()
+    {
+        try
+        {
+            if (File.Exists(credentialsFilePath))
+            {
+                string json = File.ReadAllText(credentialsFilePath);
+                watsonCredentials = JsonUtility.FromJson<WatsonCredentials>(json);
+
+                Debug.Log("Credentials loaded successfully.");
+            }
+            else
+            {
+                Debug.LogError("Credentials file not found!");
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Error loading credentials: {e.Message}");
+        }
     }
 
     IEnumerator SynthesizeAndDownloadAudio()
     {
         // Create a POST request to the Watson TTS API
-        UnityWebRequest www = UnityWebRequest.Post(_apiUrl, "{ \"text\": \" Watson test \"}", "application/json");
-        www.SetRequestHeader("Authorization", "Basic " + System.Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes("apikey:" + _apiKey)));
+        UnityWebRequest www = UnityWebRequest.Post(watsonCredentials._watsonApiUrl, "{ \"text\": \" Watson test \"}", "application/json");
+        www.SetRequestHeader("Authorization", "Basic " + System.Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes("apikey:" + watsonCredentials._watsonApiKey)));
         www.SetRequestHeader("Accept", "audio/wav;codec=pcm;rate=44100");
 
         yield return www.SendWebRequest();
