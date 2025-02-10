@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.IO;
 using System.Linq;
+using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -11,13 +12,13 @@ public class WatsonTTS : MonoBehaviour
     private string credentialsFilePath;
 
     public AudioPlayer audioPlayer;
+
     void Awake()
     {
         //get and set paths for credentials and api response
         credentialsFilePath = Path.Combine(Application.streamingAssetsPath, "credentials.json");
         LoadCredentials();
-        audioPlayer = GetComponent<AudioPlayer>();
-        StartCoroutine(SynthesizeAndDownloadAudio());
+        audioPlayer = GetComponent<AudioPlayer>();        
     }
 
     private void LoadCredentials()
@@ -42,10 +43,15 @@ public class WatsonTTS : MonoBehaviour
         }
     }
 
-    IEnumerator SynthesizeAndDownloadAudio()
-    {
-        // Create a POST request to the Watson TTS API
-        UnityWebRequest www = UnityWebRequest.Post(watsonCredentials._watsonApiUrl, "{ \"text\": \" Watson test \"}", "application/json");
+    public IEnumerator SynthesizeAndDownloadAudio(WatsonRequest request)
+    {   
+
+        string jsonData = JsonUtility.ToJson(request);
+        byte[] bytes = Encoding.UTF8.GetBytes(jsonData);
+        UnityWebRequest www = new UnityWebRequest(watsonCredentials._watsonApiUrl, "POST");
+        www.uploadHandler = new UploadHandlerRaw(bytes);
+        www.downloadHandler = new DownloadHandlerBuffer();
+        www.SetRequestHeader("Content-Type", "application/json");  
         www.SetRequestHeader("Authorization", "Basic " + System.Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes("apikey:" + watsonCredentials._watsonApiKey)));
         www.SetRequestHeader("Accept", "audio/wav;codec=pcm;rate=44100");
 
@@ -77,6 +83,10 @@ public class WatsonTTS : MonoBehaviour
             Debug.Log("Starting PlayAudio coroutine...");
             StartCoroutine(audioPlayer.PlayAudio(audioFilePath));
         }
+    }
+    public void SynthesizeAndPlayRequest(WatsonRequest request)
+    {
+        StartCoroutine(SynthesizeAndDownloadAudio(request));
     }
 
      private byte[] CreateWavHeader(byte[] pcmData, int sampleRate, int channels, int bitsPerSample)
