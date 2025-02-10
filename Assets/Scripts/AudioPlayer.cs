@@ -6,15 +6,6 @@ using System.IO;
 public class AudioPlayer : MonoBehaviour
 {
     private AudioSource audioSource;
-    
-/*     void Start() 
-    {           
-        audioSource = GetComponent<AudioSource>();
-        if (audioSource == null)
-        {
-            audioSource = gameObject.AddComponent<AudioSource>();
-        }        
-    } */
 
      void Awake()
     {
