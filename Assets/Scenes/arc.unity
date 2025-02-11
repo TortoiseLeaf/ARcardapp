@@ -193,7 +193,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1600724642782842817, guid: 768e0d2bee55a344490166285d10ba1d, type: 3}
       propertyPath: onClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: PrintBio
+      value: PlayBio
       objectReference: {fileID: 0}
     - target: {fileID: 1600724642782842817, guid: 768e0d2bee55a344490166285d10ba1d, type: 3}
       propertyPath: onClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
@@ -624,23 +624,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1600724642782842817, guid: 768e0d2bee55a344490166285d10ba1d, type: 3}
       propertyPath: onClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 6
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1600724642782842817, guid: 768e0d2bee55a344490166285d10ba1d, type: 3}
       propertyPath: onClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1996157863}
+      objectReference: {fileID: 183286957}
     - target: {fileID: 1600724642782842817, guid: 768e0d2bee55a344490166285d10ba1d, type: 3}
       propertyPath: onClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1600724642782842817, guid: 768e0d2bee55a344490166285d10ba1d, type: 3}
       propertyPath: onClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: SetActive
+      value: PlayInterest
       objectReference: {fileID: 0}
     - target: {fileID: 1600724642782842817, guid: 768e0d2bee55a344490166285d10ba1d, type: 3}
       propertyPath: onClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: UnityEngine.GameObject, UnityEngine
+      value: LinkedInDataHandler, ARcardapp.Scripts
       objectReference: {fileID: 0}
     - target: {fileID: 1600724642782842817, guid: 768e0d2bee55a344490166285d10ba1d, type: 3}
       propertyPath: onClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_BoolArgument
@@ -1017,7 +1017,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8849648377551935360, guid: d879ee8b6d50a274696f74dfe424eb1c, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1027,11 +1027,6 @@ PrefabInstance:
 --- !u!4 &1996157862 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4379377601454320250, guid: d879ee8b6d50a274696f74dfe424eb1c, type: 3}
-  m_PrefabInstance: {fileID: 1996157861}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &1996157863 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8849648377551935360, guid: d879ee8b6d50a274696f74dfe424eb1c, type: 3}
   m_PrefabInstance: {fileID: 1996157861}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &2043674892 stripped
@@ -1121,19 +1116,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   OnTargetFound:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1996157863}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   OnTargetLost:
     m_PersistentCalls:
       m_Calls: []
