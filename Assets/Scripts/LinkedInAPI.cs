@@ -107,7 +107,7 @@ public class LinkedInAPI : MonoBehaviour
 
 
 // necessary to load the data objects into watson?
-public string LoadJsonFile()
+public LinkedInClasses LoadJsonFile()
     {
         try
         {
@@ -115,7 +115,7 @@ public string LoadJsonFile()
             {
                 string json = File.ReadAllText(jsonFilePath);
                 Debug.Log("Loaded JSON: " + json);
-                return json;
+                return JsonConvert.DeserializeObject<LinkedInClasses>(json);
             }
             else
             {
