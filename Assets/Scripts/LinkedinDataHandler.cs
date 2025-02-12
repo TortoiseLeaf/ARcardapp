@@ -6,8 +6,6 @@ public class LinkedInDataHandler : MonoBehaviour
     [Tooltip("Reference to the LinkedInAPI component for fetching/reading data.")]
     public LinkedInAPI linkedInAPI;
 
-
-
     // method to fetch the LinkedIn profile
     public void FetchLinkedInProfile()
     {
@@ -21,36 +19,31 @@ public class LinkedInDataHandler : MonoBehaviour
         }        
     }
 
-    // print the user's bio 
-    public void PrintBio()
-    {
+    // play the user's bio 
+    public void PlayBio()
+    {        
         string json = linkedInAPI?.LoadJsonFile();
         if (!string.IsNullOrEmpty(json))
         {
-
-            Debug.Log("Bio from JSON:  bio");
+            FindObjectOfType<WatsonTTS>().SynthesizeAndPlayRequest(new WatsonRequest("Bio here."));
         }
         else
         {
             Debug.LogWarning("No JSON data found or LinkedInAPI missing.");
-        }
-
-       
+        }       
     }
 
-    // print the interest
-    public void PrintInterest()
-    {
+    // play the interest
+    public void PlayInterest()
+    {   
         string json = linkedInAPI?.LoadJsonFile();
         if (!string.IsNullOrEmpty(json))
         {
-            Debug.Log("Interest from JSON: interest");
+            FindObjectOfType<WatsonTTS>().SynthesizeAndPlayRequest(new WatsonRequest("Interest here."));
         }
         else
         {
             Debug.LogWarning("No JSON data found or LinkedInAPI missing.");
-        }
-
-       
+        }       
     }
 }
