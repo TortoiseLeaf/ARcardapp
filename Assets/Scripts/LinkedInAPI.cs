@@ -2,6 +2,7 @@ using System.Collections;
 using System.IO;
 using UnityEngine;
 using UnityEngine.Networking;
+using Newtonsoft.Json;
 
 public class LinkedInAPI : MonoBehaviour
 {
@@ -42,7 +43,6 @@ public class LinkedInAPI : MonoBehaviour
         }
     }
 
-    // makes the getLinkedinIn() public
     public void FetchLinkedInProfile()
     {
         if (credentials == null || string.IsNullOrEmpty(credentials._apiKeyLinkedIn))
@@ -66,21 +66,42 @@ public class LinkedInAPI : MonoBehaviour
         if (request.result == UnityWebRequest.Result.Success)
         {
             Debug.Log("Response: " + request.downloadHandler.text);
+            string response = request.downloadHandler.text;
 
-            SaveResponseToJsonFile(request.downloadHandler.text);
-        }
+            try
+            {
+                // deserialise 
+                LinkedInClasses linkedInClasses = JsonConvert.DeserializeObject<LinkedInClasses>(response);
+                Debug.Log($"linkedInClasses: {linkedInClasses.full_name}");
+
+                foreach (var i in linkedInClasses.education)
+                {
+                    Debug.Log($"linkedInClasses subfield: {i.school}, {i.degree}");
+                }
+
+                
+                SaveResponseToJsonFile(linkedInClasses);
+            } catch (System.Exception e)
+            {
+                Debug.Log($"cant deserealise {e}");
+            }
+            }
         else
         {
             Debug.LogError($"Error: {request.error}");
         }
     }
 
-    private void SaveResponseToJsonFile(string jsonResponse)
+    private void SaveResponseToJsonFile(LinkedInClasses jsonResponse)
     {
         try
         {
-            File.WriteAllText(jsonFilePath, jsonResponse);
-            Debug.Log($"JSON saved to: {jsonFilePath}");
+           
+            string json = JsonConvert.SerializeObject(jsonResponse, Formatting.Indented);
+            string path = jsonFilePath;
+            File.WriteAllText(path, json);
+            Debug.Log("Data saved to: " + path);
+
         }
         catch (System.Exception e)
         {
@@ -89,7 +110,7 @@ public class LinkedInAPI : MonoBehaviour
     }
 
 
-// can call this publicly to give access to the linkedin data
+// necessary to load the data objects into watson?
 public string LoadJsonFile()
     {
         try
