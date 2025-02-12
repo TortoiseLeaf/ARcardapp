@@ -72,16 +72,12 @@ public class LinkedInAPI : MonoBehaviour
             {
                 // deserialise 
                 LinkedInClasses linkedInClasses = JsonConvert.DeserializeObject<LinkedInClasses>(response);
-                Debug.Log($"linkedInClasses: {linkedInClasses.full_name}");
-
-                foreach (var i in linkedInClasses.education)
-                {
-                    Debug.Log($"linkedInClasses subfield: {i.school}, {i.degree}");
-                }
-
                 
                 SaveResponseToJsonFile(linkedInClasses);
-            } catch (System.Exception e)
+            } 
+            
+            catch (System.Exception e)
+            
             {
                 Debug.Log($"cant deserealise {e}");
             }
