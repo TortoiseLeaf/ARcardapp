@@ -19,13 +19,14 @@ public class LinkedInDataHandler : MonoBehaviour
         }        
     }
 
-    // play the user's bio 
+    // play the user's bio ( I don't have a bio so have used education )
     public void PlayBio()
     {        
         LinkedInClasses json = linkedInAPI?.LoadJsonFile();
         if (json != null)
         {
-            FindObjectOfType<WatsonTTS>().SynthesizeAndPlayRequest(new WatsonRequest("Bio here."));
+            Debug.Log("education history: " + json.education[0].degree);
+            FindObjectOfType<WatsonTTS>().SynthesizeAndPlayRequest(new WatsonRequest("Student of " + json.education[0].degree + "at " + json.education[0].school));
         }
         else
         {
