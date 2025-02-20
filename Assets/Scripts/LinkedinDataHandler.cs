@@ -19,13 +19,14 @@ public class LinkedInDataHandler : MonoBehaviour
         }        
     }
 
-    // play the user's bio 
+    // play the user's bio ( I don't have a bio so have used education )
     public void PlayBio()
     {        
-        string json = linkedInAPI?.LoadJsonFile();
-        if (!string.IsNullOrEmpty(json))
+        LinkedInClasses json = linkedInAPI?.LoadJsonFile();
+        if (json != null)
         {
-            FindObjectOfType<WatsonTTS>().SynthesizeAndPlayRequest(new WatsonRequest("Bio here."));
+            Debug.Log("education history: " + json.education[0].degree);
+            FindObjectOfType<WatsonTTS>().SynthesizeAndPlayRequest(new WatsonRequest("Student of " + json.education[0].degree + "at " + json.education[0].school));
         }
         else
         {
@@ -36,10 +37,12 @@ public class LinkedInDataHandler : MonoBehaviour
     // play the interest
     public void PlayInterest()
     {   
-        string json = linkedInAPI?.LoadJsonFile();
-        if (!string.IsNullOrEmpty(json))
+        LinkedInClasses json = linkedInAPI?.LoadJsonFile();
+        Debug.Log("data from button: " + json.full_name);
+
+        if (json != null)
         {
-            FindObjectOfType<WatsonTTS>().SynthesizeAndPlayRequest(new WatsonRequest("Interest here."));
+            FindObjectOfType<WatsonTTS>().SynthesizeAndPlayRequest(new WatsonRequest(json.full_name + "is some boy"));
         }
         else
         {
