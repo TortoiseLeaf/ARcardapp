@@ -4,11 +4,13 @@ using UnityEngine;
 
 public class WatsonRequest
 {
+   public string requestName;
    public string text;
 
-   public WatsonRequest(string requestText)
+   public WatsonRequest(string requestText, string name)
    {
-    text = requestText;
+      requestName = name;
+      text = requestText;
    }
 
 }
