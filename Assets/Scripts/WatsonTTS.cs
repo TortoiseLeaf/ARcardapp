@@ -65,8 +65,10 @@ public class WatsonTTS : MonoBehaviour
 
     public IEnumerator SynthesizeAndDownloadAudio(WatsonRequest request)
     {   
-        string requestFilePath = Path.Combine(Application.persistentDataPath, "LastTTSRequest.json");
-        string audioFilePath = Path.Combine(Application.persistentDataPath, "synthetized_audio.wav");
+        string requestFileName = $"{request.requestName}LastTTSRequest.json";
+        string requestFilePath = Path.Combine(Application.persistentDataPath, requestFileName);
+        string audioFileName = $"{request.requestName}.wav";
+        string audioFilePath = Path.Combine(Application.persistentDataPath, audioFileName);
         
         if (CheckIsNewWatsonRequest(request, requestFilePath))        
         {
