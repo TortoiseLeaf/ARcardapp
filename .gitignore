@@ -25,7 +25,7 @@
 
 # Visual Studio cache directory
 .vs/
-
+.vscode/
 # Gradle cache directory
 .gradle/
 
@@ -48,7 +48,8 @@ ExportedObj/
 *.VC.db
 
 # *.tgz
-
+# env credentials
+*.env
 # Unity3D generated meta files
 *.pidb.meta
 *.pdb.meta
@@ -65,6 +66,10 @@ sysinfo.txt
 
 # Crashlytics generated file
 crashlytics-build.properties
+
+# api credentials 
+credentials.json
+credentials.json.meta
 
 # Packed Addressables
 /[Aa]ssets/[Aa]ddressable[Aa]ssets[Dd]ata/*/*.bin*
