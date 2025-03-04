@@ -8,20 +8,22 @@ using UnityEngine.Networking;
 
 public class WatsonTTS : MonoBehaviour
 {
-    private WatsonCredentials watsonCredentials;
-    private string credentialsFilePath;
+    //private WatsonCredentials watsonCredentials;
+    //private string credentialsFilePath;
+    string _watsonApiKey = System.Environment.GetEnvironmentVariable("WATSON_API");
+    string _watsonApiUrl = System.Environment.GetEnvironmentVariable("WATSON_URL");
 
     public AudioPlayer audioPlayer;
 
     void Awake()
     {
         //get and set paths for credentials and api response
-        credentialsFilePath = Path.Combine(Application.streamingAssetsPath, "credentials.json");
-        LoadCredentials();
+        //credentialsFilePath = Path.Combine(Application.streamingAssetsPath, "credentials.json");
+        //LoadCredentials();
         audioPlayer = GetComponent<AudioPlayer>();        
     }
 
-    private void LoadCredentials()
+    /*private void LoadCredentials()
     {
         try
         {
@@ -41,7 +43,7 @@ public class WatsonTTS : MonoBehaviour
         {
             Debug.LogError($"Error loading credentials: {e.Message}");
         }
-    }
+    }*/
 
     public bool CheckIsNewWatsonRequest(WatsonRequest request, string path)
     {
@@ -78,11 +80,11 @@ public class WatsonTTS : MonoBehaviour
             Debug.Log($"Request saved at {requestFilePath}");
             
             byte[] bytes = Encoding.UTF8.GetBytes(jsonData);
-            UnityWebRequest www = new UnityWebRequest(watsonCredentials._watsonApiUrl, "POST");
+            UnityWebRequest www = new UnityWebRequest(_watsonApiUrl, "POST");
             www.uploadHandler = new UploadHandlerRaw(bytes);
             www.downloadHandler = new DownloadHandlerBuffer();
             www.SetRequestHeader("Content-Type", "application/json");  
-            www.SetRequestHeader("Authorization", "Basic " + System.Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes("apikey:" + watsonCredentials._watsonApiKey)));
+            www.SetRequestHeader("Authorization", "Basic " + System.Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes("apikey:" + _watsonApiKey)));
             www.SetRequestHeader("Accept", "audio/wav;codec=pcm;rate=44100");
 
             yield return www.SendWebRequest();
