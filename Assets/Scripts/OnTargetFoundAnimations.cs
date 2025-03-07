@@ -20,21 +20,21 @@ public class OnTargetFoundAnimations : MonoBehaviour
         if (interestButton == null) interestButton = GameObject.Find("InterestButton");
     }
 
-    IEnumerator MoveItem(GameObject item, Vector3 direction, float speed, Vector3 finalPosition)
+    IEnumerator MoveItem(GameObject item)
     {
-        while (Vector3.Distance(item.transform.position, finalPosition) > 0.01f)
-        {
-            item.transform.position += direction * speed;
-            yield return new WaitForSeconds(0.01f);
+        while (Mathf.Abs(item.transform.position.z + 91f) > 0.001f)
+        {            
+            item.transform.position -= new Vector3(0, 0, 0.01f);
+            yield return null;
         }
     }
 
 
     public void StartMoveItem()
     {   
-        StartCoroutine(MoveItem(linkedinButton, down, 0.1f, new Vector3(0, 0, -5)));
-        StartCoroutine(MoveItem(bioButton, down, 0.1f, new Vector3(0, 0, -5)));
-        StartCoroutine(MoveItem(interestButton, down, 0.1f, new Vector3(0, 0, -5)));
+        StartCoroutine(MoveItem(linkedinButton));
+        StartCoroutine(MoveItem(bioButton));
+        StartCoroutine(MoveItem(interestButton));
     }
 
     // Update is called once per frame
