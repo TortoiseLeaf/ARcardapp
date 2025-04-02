@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using System.IO;
 using System;
 using UnityEditor.Build;
@@ -7,7 +8,7 @@ using UnityEngine;
 public class PreBuildScript : IPreprocessBuildWithReport
 {
 
-    
+     
     public int callbackOrder => 0; 
     
     public void OnPreprocessBuild(BuildReport report)
@@ -38,3 +39,4 @@ public class PreBuildScript : IPreprocessBuildWithReport
     }
 
 }
+#endif
