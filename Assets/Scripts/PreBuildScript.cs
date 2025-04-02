@@ -1,16 +1,20 @@
 using System.IO;
-using UnityEditor;
+using System;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
 using UnityEngine;
 
 public class PreBuildScript : IPreprocessBuildWithReport
 {
-    public int callbackOrder => 0; 
 
+    
+    public int callbackOrder => 0; 
+    
     public void OnPreprocessBuild(BuildReport report)
     {
-        string apiKey = System.Environment.GetEnvironmentVariable("LINKEDIN_API");
+        try
+        {
+            string apiKey = System.Environment.GetEnvironmentVariable("LINKEDIN_API");
 
         if (!string.IsNullOrEmpty(apiKey))
         {
@@ -25,5 +29,12 @@ public class PreBuildScript : IPreprocessBuildWithReport
         {
             Debug.LogError("cannot find LINKEDIN_API in environment!");
         }
+        }
+        catch (Exception e)
+        {
+            Debug.LogError("failed Prebuildscript: " + e);
+        }
+
     }
+
 }
