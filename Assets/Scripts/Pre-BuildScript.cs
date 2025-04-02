@@ -1,25 +1,29 @@
 using System.IO;
-using System;
+using UnityEditor;
+using UnityEditor.Build;
+using UnityEditor.Build.Reporting;
 using UnityEngine;
 
-public class PreBuildConfig
+public class PreBuildScript : IPreprocessBuildWithReport
 {
-    public static void CreateConfig()
-    {
-        try
-        {
-            string _linkedinApi = System.Environment.GetEnvironmentVariable("LINKEDIN_API");
+    public int callbackOrder => 0; 
 
-            if (!string.IsNullOrEmpty(_linkedinApi))
-            {
-                string configFilePath = "Assets/StreamingAssets/config.json";
-                File.WriteAllText(configFilePath, $"{{ \"_linkedinApi\": \"{_linkedinApi}\" }}");
-                Debug.Log("Config file generated: " + configFilePath);
-            }
-        }
-        catch (Exception e)
+    public void OnPreprocessBuild(BuildReport report)
+    {
+        string apiKey = System.Environment.GetEnvironmentVariable("LINKEDIN_API");
+
+        if (!string.IsNullOrEmpty(apiKey))
         {
-            Debug.Log("Error generating config file: " + e);
+            string configPath = "Assets/StreamingAssets/config.json";
+
+            string json = $"{{ \"apiKey\": \"{apiKey}\" }}";
+
+            File.WriteAllText(configPath, json);
+            Debug.Log("Config file generated at: " + configPath);
+        }
+        else
+        {
+            Debug.LogError("cannot find LINKEDIN_API in environment!");
         }
     }
 }
