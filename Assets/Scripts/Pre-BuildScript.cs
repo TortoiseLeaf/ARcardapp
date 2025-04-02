@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class PreBuildConfig
 {
-    [MenuItem("Build/Generate Config File")]
     public static void CreateConfig()
     {
         string _linkedinApi = System.Environment.GetEnvironmentVariable("LINKEDIN_API");
