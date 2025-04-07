@@ -8,20 +8,29 @@ using UnityEngine;
 public class PreBuildScript : IPreprocessBuildWithReport
 {
 
-     
-    public int callbackOrder => 0; 
-    
+
+    //public int callbackOrder => 0; 
+    public int callbackOrder { get { return 0; } }
+
     public void OnPreprocessBuild(BuildReport report)
     {
         try
         {
-            string apiKey = System.Environment.GetEnvironmentVariable("LINKEDIN_API");
+            string _apiKeyLinkedIn = System.Environment.GetEnvironmentVariable("LINKEDIN_API");
+            string _baseUrlLinkedIn = System.Environment.GetEnvironmentVariable("LINKEDIN_BASE_URL");
+            string _linkedinProfileUrl = System.Environment.GetEnvironmentVariable("LINKEDIN_PROFILE");
+            string _watsonApiKey = System.Environment.GetEnvironmentVariable("WATSON_API");
+            string _watsonApiUrl = System.Environment.GetEnvironmentVariable("WATSON_URL");
 
-        if (!string.IsNullOrEmpty(apiKey))
+            if (!string.IsNullOrEmpty(_apiKeyLinkedIn))
         {
-            string configPath = "Assets/StreamingAssets/config.json";
+            string configPath = "Assets/StreamingAssets/credentials.json";
 
-            string json = $"{{ \"apiKey\": \"{apiKey}\" }}";
+            string json = $"{{ \"_apiKeyLinkedIn\": \"{_apiKeyLinkedIn}\" }}" +
+                    $"{{ \"_baseUrlLinkedIn\": \"{_baseUrlLinkedIn}\" }}" +
+                    $"{{ \"_linkedinProfileUrl\": \"{_linkedinProfileUrl}\" }}" +
+                    $"{{ \"_watsonApiKey\": \"{_watsonApiKey}\" }}" +
+                    $"{{ \"_watsonApiUrl\": \"{_watsonApiUrl}\" }}";
 
             File.WriteAllText(configPath, json);
             Debug.Log("Config file generated at: " + configPath);

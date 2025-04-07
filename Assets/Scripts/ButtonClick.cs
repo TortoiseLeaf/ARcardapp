@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Events;
@@ -7,12 +8,11 @@ using UnityEngine.Events;
 
 public class ButtonClick : MonoBehaviour, IPointerClickHandler //, IPointerDownHandler, IPointerUpHandler
 {
-    string _linkedinApi = ConfigLoader.GetLinkedinApi();
-
-    string _linkedinProfileUrl = System.Environment.GetEnvironmentVariable("LINKEDIN_PROFILE");
+    
 
     [Tooltip("UnityEvent that fires when the object is clicked.")]
     public UnityEvent onClick;
+
 
     public void OnPointerClick(PointerEventData eventData)
     {
@@ -26,7 +26,6 @@ public class ButtonClick : MonoBehaviour, IPointerClickHandler //, IPointerDownH
         StartCoroutine(ButtonClickEffect()); 
         Debug.Log("Quad was touched!");
         Debug.Log("persistent data path: " + Application.persistentDataPath);
-        Debug.Log("env var " + _linkedinApi);
     }
 
     private IEnumerator ButtonClickEffect()
