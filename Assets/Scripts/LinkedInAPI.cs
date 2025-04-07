@@ -6,26 +6,29 @@ using Newtonsoft.Json;
 
 public class LinkedInAPI : MonoBehaviour
 {
+    /*
     string _apiKeyLinkedIn = System.Environment.GetEnvironmentVariable("LINKEDIN_API");
     string _baseUrlLinkedIn = System.Environment.GetEnvironmentVariable("LINKEDIN_BASE_URL");
     string _linkedinProfileUrl = System.Environment.GetEnvironmentVariable("LINKEDIN_PROFILE");
+    */
+    
 
-    //private ProxycurlCredentials credentials;
-    //private string credentialsFilePath;
+    private ProxycurlCredentials credentials;
+    private string credentialsFilePath;
 
     public string jsonFilePath;
 
     void Awake()
     {
         //get and set paths for credentials and api response
-        //credentialsFilePath = Path.Combine(Application.streamingAssetsPath, "credentials.json");
+        credentialsFilePath = Path.Combine(Application.streamingAssetsPath, "credentials.json");
 
         jsonFilePath = Path.Combine(Application.persistentDataPath, "LinkedInProfile.json");
 
-        //LoadCredentials();
+        LoadCredentials();
     }
 
-    /*private void LoadCredentials() REFACTOR TO CHECK FOR PROD ENV VARS
+    private void LoadCredentials()
     {
         try
         {
@@ -45,11 +48,11 @@ public class LinkedInAPI : MonoBehaviour
         {
             Debug.LogError($"Error loading credentials: {e.Message}");
         }
-    }*/
+    }
 
     public void FetchLinkedInProfile()
     {
-        if (_apiKeyLinkedIn == null || string.IsNullOrEmpty(_apiKeyLinkedIn))
+        if (credentials._apiKeyLinkedIn == null || string.IsNullOrEmpty(credentials._apiKeyLinkedIn))
         {
             Debug.LogError("API credentials are not set!");
             return;
@@ -61,9 +64,9 @@ public class LinkedInAPI : MonoBehaviour
     private IEnumerator GetLinkedInProfile()
     {
 
-        string requestUrl = $"{_baseUrlLinkedIn}?url={UnityWebRequest.EscapeURL(_linkedinProfileUrl)}";
+        string requestUrl = $"{credentials._baseUrlLinkedIn}?url={UnityWebRequest.EscapeURL(credentials._linkedinProfileUrl)}";
         UnityWebRequest request = UnityWebRequest.Get(requestUrl);
-        request.SetRequestHeader("Authorization", $"Bearer {_apiKeyLinkedIn}");
+        request.SetRequestHeader("Authorization", $"Bearer {credentials._apiKeyLinkedIn}");
 
         yield return request.SendWebRequest();
 
