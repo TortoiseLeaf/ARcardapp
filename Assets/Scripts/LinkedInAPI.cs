@@ -3,15 +3,10 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.Networking;
 using Newtonsoft.Json;
+using System.Threading.Tasks;
 
 public class LinkedInAPI : MonoBehaviour
 {
-    /*
-    string _apiKeyLinkedIn = System.Environment.GetEnvironmentVariable("LINKEDIN_API");
-    string _baseUrlLinkedIn = System.Environment.GetEnvironmentVariable("LINKEDIN_BASE_URL");
-    string _linkedinProfileUrl = System.Environment.GetEnvironmentVariable("LINKEDIN_PROFILE");
-    */
-
 
     private ProxycurlCredentials credentials;
     private string credentialsFilePath;
@@ -31,7 +26,7 @@ public class LinkedInAPI : MonoBehaviour
 #if UNITY_ANDROID
         
         credentialsFilePath = Path.Combine(Application.streamingAssetsPath, "credentials.json");
-        Debug.Log("runs in Android" + credentialsFilePath); //wprks
+        Debug.Log("credspath runs in Android");
         StartCoroutine(
                 LoadCredsAndroid());
         jsonFilePath = Path.Combine(Application.persistentDataPath, "LinkedInProfile.json");
@@ -41,29 +36,32 @@ public class LinkedInAPI : MonoBehaviour
 
     private IEnumerator LoadCredsAndroid()
     {
-        
-        Debug.Log("creds before get");
-            UnityWebRequest www = UnityWebRequest.Get(credentialsFilePath);
+        if (credentialsFilePath.Contains("://") || credentialsFilePath.Contains(":///"))
+        {
+            
+        UnityWebRequest www = UnityWebRequest.Get(credentialsFilePath);
+        www.SetRequestHeader("Content-Type", "text/plain; charset=utf-8");
         www.downloadHandler = new DownloadHandlerBuffer();
+
         yield return www.SendWebRequest();
-        Debug.Log("creds after get");
+        
             if (www.result != UnityWebRequest.Result.Success)
             {
                 Debug.LogError("Error reading creds in LinkedinAPI: " + www.error);
             }
-            else
-            {
-            // works in editor, only returns 1st char in android
-            string credsText = www.downloadHandler.text;
 
-            //credentials = JsonUtility.FromJson<ProxycurlCredentials>(credsText);
-            Debug.Log("Creds loaded from android in LinkedIn API: " + credsText);
-            
+        else
+            {   
 
-            yield return credentials;
+                // deserialize the android creds
+                string json = www.downloadHandler.text;
+                credentials = JsonUtility.FromJson<ProxycurlCredentials>(json);
+
+                yield return credentials;
+
             }
-
-        }
+    }
+}
  
 
 private void LoadCredentials()
@@ -88,9 +86,10 @@ private void LoadCredentials()
         }
     }
 
-    // make sure both credentials types are read 
     public void FetchLinkedInProfile()
     {
+        Debug.Log("creds try in api: " + credentials._apiKeyLinkedIn);
+
         if (credentials._apiKeyLinkedIn == null || string.IsNullOrEmpty(credentials._apiKeyLinkedIn))
         {
             Debug.LogError("API credentials are not set!");
@@ -116,7 +115,7 @@ private void LoadCredentials()
 
             try
             {
-                // deserialise 
+
                 LinkedInClasses linkedInClasses = JsonConvert.DeserializeObject<LinkedInClasses>(response);
                 
                 SaveResponseToJsonFile(linkedInClasses);
