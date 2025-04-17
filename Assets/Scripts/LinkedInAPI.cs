@@ -10,12 +10,12 @@ public class LinkedInAPI : MonoBehaviour
 
     private ProxycurlCredentials credentials;
     private string credentialsFilePath;
-    public static ConfigLoader configLoader;
+    //public static ConfigLoader configLoader;
     private string jsonFilePath;
 
     void Awake()
     {
-  
+
 #if UNITY_EDITOR
         Debug.Log("runs in Editor");
         credentialsFilePath = Path.Combine(Application.streamingAssetsPath, "credentials.json");
@@ -24,7 +24,7 @@ public class LinkedInAPI : MonoBehaviour
 #endif
 
 #if UNITY_ANDROID
-        
+
         credentialsFilePath = Path.Combine(Application.streamingAssetsPath, "credentials.json");
         Debug.Log("credspath runs in Android");
         StartCoroutine(
@@ -34,37 +34,37 @@ public class LinkedInAPI : MonoBehaviour
 
     }
 
+    // take this into another file, add credsfilepath as param and use it in both linkedin and watson scripts?
+    // how to divide the load?
     private IEnumerator LoadCredsAndroid()
     {
         if (credentialsFilePath.Contains("://") || credentialsFilePath.Contains(":///"))
         {
-            
-        UnityWebRequest www = UnityWebRequest.Get(credentialsFilePath);
-        www.SetRequestHeader("Content-Type", "text/plain; charset=utf-8");
-        www.downloadHandler = new DownloadHandlerBuffer();
 
-        yield return www.SendWebRequest();
-        
+            UnityWebRequest www = UnityWebRequest.Get(credentialsFilePath);
+            www.SetRequestHeader("Content-Type", "text/plain; charset=utf-8");
+            www.downloadHandler = new DownloadHandlerBuffer();
+
+            yield return www.SendWebRequest();
+
             if (www.result != UnityWebRequest.Result.Success)
             {
                 Debug.LogError("Error reading creds in LinkedinAPI: " + www.error);
             }
 
-        else
-            {   
-
-                // deserialize the android creds
+            else
+            {
                 string json = www.downloadHandler.text;
                 credentials = JsonUtility.FromJson<ProxycurlCredentials>(json);
 
                 yield return credentials;
 
             }
+        }
     }
-}
- 
 
-private void LoadCredentials()
+
+    private void LoadCredentials()
     {
         try
         {
@@ -117,16 +117,16 @@ private void LoadCredentials()
             {
 
                 LinkedInClasses linkedInClasses = JsonConvert.DeserializeObject<LinkedInClasses>(response);
-                
+
                 SaveResponseToJsonFile(linkedInClasses);
-            } 
-            
+            }
+
             catch (System.Exception e)
-            
+
             {
                 Debug.Log($"cant deserealise {e}");
             }
-            }
+        }
         else
         {
             Debug.LogError($"Error: {request.error}");
@@ -137,7 +137,7 @@ private void LoadCredentials()
     {
         try
         {
-           
+
             string json = JsonConvert.SerializeObject(jsonResponse, Formatting.Indented);
             string path = jsonFilePath;
             File.WriteAllText(path, json);
@@ -151,8 +151,8 @@ private void LoadCredentials()
     }
 
 
-// necessary to load the data objects into watson?
-public LinkedInClasses LoadJsonFile()
+    // necessary to load the data objects into watson?
+    public LinkedInClasses LoadJsonFile()
     {
         try
         {
