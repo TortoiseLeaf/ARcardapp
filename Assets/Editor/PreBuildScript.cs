@@ -4,9 +4,8 @@ using System.IO;
 using UnityEditor;
 using UnityEngine;
 
-public class PreBuildConfigInjector
+public class PreBuildScript
 {
-    [MenuItem("Build/Generate Config File")]
     public static void GenerateCredsFile()
     {
         try
