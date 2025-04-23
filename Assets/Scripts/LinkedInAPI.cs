@@ -3,30 +3,66 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.Networking;
 using Newtonsoft.Json;
+using System.Threading.Tasks;
 
 public class LinkedInAPI : MonoBehaviour
 {
-    /*
-    string _apiKeyLinkedIn = System.Environment.GetEnvironmentVariable("LINKEDIN_API");
-    string _baseUrlLinkedIn = System.Environment.GetEnvironmentVariable("LINKEDIN_BASE_URL");
-    string _linkedinProfileUrl = System.Environment.GetEnvironmentVariable("LINKEDIN_PROFILE");
-    */
-    
 
     private ProxycurlCredentials credentials;
     private string credentialsFilePath;
-
-    public string jsonFilePath;
+    //public static ConfigLoader configLoader;
+    private string jsonFilePath;
 
     void Awake()
     {
-        //get and set paths for credentials and api response
+
+#if UNITY_EDITOR
+        Debug.Log("runs in Editor");
         credentialsFilePath = Path.Combine(Application.streamingAssetsPath, "credentials.json");
-
-        jsonFilePath = Path.Combine(Application.persistentDataPath, "LinkedInProfile.json");
-
         LoadCredentials();
+        jsonFilePath = Path.Combine(Application.persistentDataPath, "LinkedInProfile.json");
+#endif
+
+#if UNITY_ANDROID
+
+        credentialsFilePath = Path.Combine(Application.streamingAssetsPath, "credentials.json");
+        Debug.Log("credspath runs in Android");
+        StartCoroutine(
+                LoadCredsAndroid());
+        jsonFilePath = Path.Combine(Application.persistentDataPath, "LinkedInProfile.json");
+#endif
+
     }
+
+    // take this into another file, add credsfilepath as param and use it in both linkedin and watson scripts?
+    // how to divide the load?
+    private IEnumerator LoadCredsAndroid()
+    {
+        if (credentialsFilePath.Contains("://") || credentialsFilePath.Contains(":///"))
+        {
+
+            UnityWebRequest www = UnityWebRequest.Get(credentialsFilePath);
+            www.SetRequestHeader("Content-Type", "text/plain; charset=utf-8");
+            www.downloadHandler = new DownloadHandlerBuffer();
+
+            yield return www.SendWebRequest();
+
+            if (www.result != UnityWebRequest.Result.Success)
+            {
+                Debug.LogError("Error reading creds in LinkedinAPI: " + www.error);
+            }
+
+            else
+            {
+                string json = www.downloadHandler.text;
+                credentials = JsonUtility.FromJson<ProxycurlCredentials>(json);
+
+                yield return credentials;
+
+            }
+        }
+    }
+
 
     private void LoadCredentials()
     {
@@ -52,6 +88,8 @@ public class LinkedInAPI : MonoBehaviour
 
     public void FetchLinkedInProfile()
     {
+        Debug.Log("creds try in api: " + credentials._apiKeyLinkedIn);
+
         if (credentials._apiKeyLinkedIn == null || string.IsNullOrEmpty(credentials._apiKeyLinkedIn))
         {
             Debug.LogError("API credentials are not set!");
@@ -77,18 +115,18 @@ public class LinkedInAPI : MonoBehaviour
 
             try
             {
-                // deserialise 
+
                 LinkedInClasses linkedInClasses = JsonConvert.DeserializeObject<LinkedInClasses>(response);
-                
+
                 SaveResponseToJsonFile(linkedInClasses);
-            } 
-            
+            }
+
             catch (System.Exception e)
-            
+
             {
                 Debug.Log($"cant deserealise {e}");
             }
-            }
+        }
         else
         {
             Debug.LogError($"Error: {request.error}");
@@ -99,7 +137,7 @@ public class LinkedInAPI : MonoBehaviour
     {
         try
         {
-           
+
             string json = JsonConvert.SerializeObject(jsonResponse, Formatting.Indented);
             string path = jsonFilePath;
             File.WriteAllText(path, json);
@@ -113,8 +151,8 @@ public class LinkedInAPI : MonoBehaviour
     }
 
 
-// necessary to load the data objects into watson?
-public LinkedInClasses LoadJsonFile()
+    // necessary to load the data objects into watson?
+    public LinkedInClasses LoadJsonFile()
     {
         try
         {
