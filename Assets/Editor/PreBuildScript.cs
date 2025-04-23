@@ -6,7 +6,6 @@ using UnityEngine;
 
 public class PreBuildConfigInjector
 {
-    [MenuItem("Build/Generate Config File")]
     public static void GenerateCredsFile()
     {
         try
