@@ -6,7 +6,6 @@ public class LinkedInDataHandler : MonoBehaviour
     [Tooltip("Reference to the LinkedInAPI component for fetching/reading data.")]
     public LinkedInAPI linkedInAPI;
 
-    // method to fetch the LinkedIn profile
     public void FetchLinkedInProfile()
     {
         if (linkedInAPI != null)
@@ -19,7 +18,6 @@ public class LinkedInDataHandler : MonoBehaviour
         }        
     }
 
-    // play the user's bio ( I don't have a bio so have used education )
     public void PlayBio()
     {        
         LinkedInClasses json = linkedInAPI?.LoadJsonFile();
@@ -34,7 +32,6 @@ public class LinkedInDataHandler : MonoBehaviour
         }       
     }
 
-    // play the interest
     public void PlayInterest()
     {   
         LinkedInClasses json = linkedInAPI?.LoadJsonFile();

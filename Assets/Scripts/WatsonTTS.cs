@@ -19,18 +19,18 @@ public class WatsonTTS : MonoBehaviour
         credentialsFilePath = Path.Combine(Application.streamingAssetsPath, "credentials.json");
 
 #if UNITY_EDITOR
-        Debug.Log("runs in Editor");
+
         LoadCredentials();
         audioPlayer = GetComponent<AudioPlayer>();
 #endif
 
 #if UNITY_ANDROID
 
-        Debug.Log("credspath runs in Android Watson" + credentialsFilePath);
         StartCoroutine(
                 LoadAndroidCreds());
+        audioPlayer = GetComponent<AudioPlayer>();
 #endif
-    
+
     }
 
     private IEnumerator LoadAndroidCreds()
@@ -69,29 +69,29 @@ public class WatsonTTS : MonoBehaviour
                 string json = File.ReadAllText(credentialsFilePath);
                 watsonCredentials = JsonUtility.FromJson<WatsonCredentials>(json);
 
-                Debug.Log("Credentials loaded successfully.");
+                Debug.Log("Watson credentials loaded successfully.");
             }
             else
             {
-                Debug.LogError("Credentials file not found!");
+                Debug.LogError("Watson credentials file not found!");
             }
         }
         catch (System.Exception e)
         {
-            Debug.LogError($"Error loading credentials: {e.Message}");
+            Debug.LogError($"Watson Error loading credentials: {e.Message}");
         }
     }
 
     public bool CheckIsNewWatsonRequest(WatsonRequest request, string path)
     {
-        Debug.Log("creds Checking if request is new...");        
+        Debug.Log("Watson Checking if request is new...");        
         
         if (File.Exists(path))
         {
             WatsonRequest oldRequest = JsonUtility.FromJson<WatsonRequest>(File.ReadAllText(path));
             if (oldRequest.text == request.text)
             {
-                Debug.Log("creds Requested text is already synthesised.");
+                Debug.Log("Watson Requested text is already synthesised.");
                 return false;
             }
             else {
@@ -102,36 +102,6 @@ public class WatsonTTS : MonoBehaviour
         }
     }
 
-    private IEnumerator LoadAndroidAudio(string audioFilePath)
-    {
-        if (audioFilePath.Contains("://") || audioFilePath.Contains(":///"))
-        {
-
-            UnityWebRequest www = UnityWebRequest.Get(audioFilePath);
-            //www.SetRequestHeader("Content-Type", "text/plain; charset=utf-8");
-
-            www.downloadHandler = new DownloadHandlerBuffer();
-
-            yield return www.SendWebRequest();
-
-            if (www.result != UnityWebRequest.Result.Success)
-            {
-                Debug.LogError("creds Error reading audio file in Android Watson: " + www.error);
-            }
-
-            else
-            {
-                Debug.Log("creds www watson");
-                byte[] audioData = www.downloadHandler.data;
-                string json = www.downloadHandler.text;
-
-                StartCoroutine(audioPlayer.PlayAudio(json));
-
-                yield return audioData;
-
-            }
-        }
-    }
 
     public IEnumerator SynthesizeAndDownloadAudio(WatsonRequest request)
     {
@@ -142,10 +112,10 @@ public class WatsonTTS : MonoBehaviour
 
         if (CheckIsNewWatsonRequest(request, requestFilePath))
         {
-            Debug.Log("creds New request detected. Synthesizing...");
+            Debug.Log("Watson New request detected. Synthesizing...");
             string jsonData = JsonUtility.ToJson(request);
             File.WriteAllText(requestFilePath, jsonData);
-            Debug.Log($"creds Request saved at {requestFilePath}");
+            Debug.Log($"Watson Request saved at {requestFilePath}");
 
             byte[] bytes = Encoding.UTF8.GetBytes(jsonData);
             UnityWebRequest www = new UnityWebRequest(watsonCredentials._watsonApiUrl, "POST");
@@ -159,42 +129,42 @@ public class WatsonTTS : MonoBehaviour
 
             if (www.result != UnityWebRequest.Result.Success)
             {
-                Debug.LogError($"creds Error downloading audio: {www.error}");
+                Debug.LogError($"Watson Error downloading audio: {www.error}");
                 yield break;
             }
 
-            Debug.Log("creds Downloading audio...");
+            Debug.Log("Watson Downloading audio...");
             byte[] audioData = www.downloadHandler.data;
 
             // Save the downloaded audio file
             byte[] wavData = CreateWavHeader(audioData, 44100, 1, 16);
             File.WriteAllBytes(audioFilePath, wavData);
-            Debug.Log($" creds Audio saved at {audioFilePath}");
+            Debug.Log($"Watson Audio saved at {audioFilePath}");
         }
         else
         {
-            Debug.Log("creds Using saved audio..." + audioFilePath);
+            Debug.Log("Watson Using saved audio..." + audioFilePath);
         }
-        // do a www extraction here too? how does this originally work it's wav data by byte
+        
+
 #if UNITY_ANDROID
-        Debug.Log("creds coroutine(load android audio)");
-        StartCoroutine(LoadAndroidAudio(audioFilePath));
+        Debug.Log("Watson Play audio android");
+        StartCoroutine(audioPlayer.PlayAudio(audioFilePath));
 
 #endif
 
 #if UNITY_EDITOR
         if (File.Exists(audioFilePath))
         {
-            Debug.Log("creds Starting PlayAudio coroutine...");
+            Debug.Log("Watson Starting PlayAudio coroutine...");
             StartCoroutine(audioPlayer.PlayAudio(audioFilePath));
         }
         else
         {
-            Debug.LogError("creds Audio file not found");
+            Debug.LogError("Watson Audio file not found");
         }
 #endif
     }
-
 
 
     public void SynthesizeAndPlayRequest(WatsonRequest request)
