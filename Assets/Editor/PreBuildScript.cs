@@ -1,17 +1,13 @@
 #if UNITY_EDITOR
-using System.IO;
 using System;
-using UnityEditor.Build;
-using UnityEditor.Build.Reporting;
+using System.IO;
+using UnityEditor;
 using UnityEngine;
 
-public class PreBuildScript : IPreprocessBuildWithReport
+public class PreBuildConfigInjector
 {
-
-
-    public int callbackOrder => 0; 
-
-    public void OnPreprocessBuild(BuildReport report)
+    [MenuItem("Build/Generate Config File")]
+    public static void GenerateCredsFile()
     {
         try
         {
@@ -22,29 +18,27 @@ public class PreBuildScript : IPreprocessBuildWithReport
             string _watsonApiUrl = System.Environment.GetEnvironmentVariable("WATSON_URL");
 
             if (!string.IsNullOrEmpty(_apiKeyLinkedIn))
-        {
-            string configPath = "Assets/StreamingAssets/credentials.json";
+            {
+                string credsPath = "Assets/StreamingAssets/credentials.json";
 
-            string json = $"{{ \"_apiKeyLinkedIn\": \"{_apiKeyLinkedIn}\" }}" +
-                    $"{{ \"_baseUrlLinkedIn\": \"{_baseUrlLinkedIn}\" }}" +
-                    $"{{ \"_linkedinProfileUrl\": \"{_linkedinProfileUrl}\" }}" +
-                    $"{{ \"_watsonApiKey\": \"{_watsonApiKey}\" }}" +
-                    $"{{ \"_watsonApiUrl\": \"{_watsonApiUrl}\" }}";
+                string json = $"{{ \"_apiKeyLinkedIn\": \"{_apiKeyLinkedIn}\" }}" +
+                        $"{{ \"_baseUrlLinkedIn\": \"{_baseUrlLinkedIn}\" }}" +
+                        $"{{ \"_linkedinProfileUrl\": \"{_linkedinProfileUrl}\" }}" +
+                        $"{{ \"_watsonApiKey\": \"{_watsonApiKey}\" }}" +
+                        $"{{ \"_watsonApiUrl\": \"{_watsonApiUrl}\" }}";
 
-            File.WriteAllText(configPath, json);
-            Debug.Log("Config file generated at: " + configPath);
-        }
-        else
-        {
-            Debug.LogError("cannot find LINKEDIN_API in environment!");
-        }
+                File.WriteAllText(credsPath, json);
+                Debug.Log("Config file generated at: " + credsPath);
+            }
+            else
+            {
+                Debug.LogError("cannot find LINKEDIN_API in environment!");
+            }
         }
         catch (Exception e)
         {
             Debug.LogError("failed Prebuildscript: " + e);
         }
-
     }
-
 }
 #endif
