@@ -31,8 +31,15 @@ public class WatsonTTS : MonoBehaviour
         audioPlayer = GetComponent<AudioPlayer>();
 #endif
 
+        LoadProductionCredentials();
     }
 
+    private void LoadProductionCredentials()
+    {
+        WatsonCredentials credentials = CredsLoader.GetWatsonProdCreds();
+        Debug.Log("Watson credsLoader: " + credentials._watsonApiUrl);
+
+    }
     private IEnumerator LoadAndroidCreds()
     {
         if (credentialsFilePath.Contains("://") || credentialsFilePath.Contains(":///"))
