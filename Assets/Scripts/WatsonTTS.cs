@@ -10,7 +10,7 @@ public class WatsonTTS : MonoBehaviour
 {
     private WatsonCredentials watsonCredentials;
     private string credentialsFilePath;
-   
+    public CredsLoader GetCredsLoader;
 
     public AudioPlayer audioPlayer;
 
@@ -25,13 +25,13 @@ public class WatsonTTS : MonoBehaviour
 #endif
 
 #if UNITY_ANDROID
-
+        LoadProductionCredentials();
         StartCoroutine(
                 LoadAndroidCreds());
         audioPlayer = GetComponent<AudioPlayer>();
 #endif
 
-        LoadProductionCredentials();
+
     }
 
     private void LoadProductionCredentials()
