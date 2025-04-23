@@ -32,10 +32,17 @@ public class LinkedInAPI : MonoBehaviour
         jsonFilePath = Path.Combine(Application.persistentDataPath, "LinkedInProfile.json");
 #endif
 
+        LoadProductionCredentials();
+
     }
 
-    // take this into another file, add credsfilepath as param and use it in both linkedin and watson scripts?
-    // how to divide the load?
+
+    private void LoadProductionCredentials()
+    {
+        ProxycurlCredentials credentials = CredsLoader.GetLinkedInProdCreds();
+        Debug.Log("Linkedin credsLoader: " + credentials._linkedinProfileUrl);
+
+    }
     private IEnumerator LoadCredsAndroid()
     {
         if (credentialsFilePath.Contains("://") || credentialsFilePath.Contains(":///"))
