@@ -1,7 +1,16 @@
 {
-  "dependencies": {
+    "scopedRegistries": [
+        {
+            "name": "OpenUPM",
+            "url": "https://package.openupm.com",
+            "scopes": [
+                "com.atteneder"
+            ]
+        }
+    ],
+    "dependencies": {
     "com.atteneder.gltfast": "6.8.0",
-    "com.ptc.vuforia.engine": "file:com.ptc.vuforia.engine-10.27.3.tgz",
+    "com.ptc.vuforia.engine": "file:com.ptc.vuforia.engine-11.0.4.tgz",
     "com.unity.collab-proxy": "2.5.2",
     "com.unity.feature.development": "1.0.1",
     "com.unity.mobile.android-logcat": "1.4.4",
@@ -41,14 +50,5 @@
     "com.unity.modules.vr": "1.0.0",
     "com.unity.modules.wind": "1.0.0",
     "com.unity.modules.xr": "1.0.0"
-  },
-  "scopedRegistries": [
-    {
-      "name": "OpenUPM",
-      "url": "https://package.openupm.com",
-      "scopes": [
-        "com.atteneder"
-      ]
-    }
-  ]
+  }
 }

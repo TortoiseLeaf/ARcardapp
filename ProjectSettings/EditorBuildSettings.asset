@@ -11,4 +11,5 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/arc.unity
     guid: 878333a3109fd93409effad1447ad397
-  m_configObjects: {}
+  m_configObjects:
+    com.unity.xr.arfoundation.simulation_settings: {fileID: 11400000, guid: fe6257a2b050cdd4a8ca3a88abec5cfb, type: 2}
