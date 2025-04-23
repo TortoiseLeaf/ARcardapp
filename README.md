@@ -1,15 +1,16 @@
-ARcardapp README
+# ARcardapp README
 
-### Contribution
+## Contribution guidelines
 
-To contribute, first clone the repository.
-`git@github.com:TortoiseLeaf/ARcardapp.git`
+Clone the repository.
+`git clone git@github.com:TortoiseLeaf/ARcardapp.git`
 
-the `main` branch is locked and will only be used for releases. So we will be working primarily from the `dev` branch.
+`main` is locked and only used for shipping releases to Unity Cloud. If working on a new ticket or feature, branch from `dev`.
 
-create a branch from `dev` and name it after the Jira ticket you are working on, e.g. `ARC - 12: add a 3D prefab`
+Name it after the Jira ticket you are working on, e.g. `ARC - 12: add a 3D prefab`
 
-When you have completed the ticket, remember to pull dev into your branch:
+Before remerging remember to first pull `dev` into your branch:
+
 
 `git checkout dev && git pull`
 
@@ -25,3 +26,39 @@ You now have the latest version of `dev` on your branch and are ready to merge!
 Merge your branch into `dev` and someone will review it in a pull request.
 
 **important:** remember to delete the branch when it's no longer needed.
+
+
+
+## End-User Training materials
+
+install the latest version from `Link TBD`
+
+
+
+Open the application on your phone and scan this target image:
+
+
+![target-img](https://github.com/TortoiseLeaf/ARcardapp/blob/docs-imgs/docs-imgs/target-img.jpg?raw=true)
+
+
+This should produce the AR UI like so:
+
+
+![ARcard-Demo](https://github.com/TortoiseLeaf/ARcardapp/blob/docs-imgs/docs-imgs/ARcard-demo.gif?raw=true)
+
+
+This is a map of the UI functions:
+
+
+![ARcard-figma](https://github.com/TortoiseLeaf/ARcardapp/blob/docs-imgs/docs-imgs/ARcard-figma.png?raw=true)
+
+
+The buttons along the bottom of the card should correspond with different sections of the card-issuers profile data. 
+
+From left to right: 
+- To hear the Professionals' bio, press the first button.
+- For interests press the second
+- For Education history press the third.
+
+
+We hope you enjoy the application.
