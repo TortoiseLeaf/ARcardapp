@@ -17,14 +17,13 @@ public class WatsonTTS : MonoBehaviour
         credentialsFilePath = Path.Combine(Application.streamingAssetsPath, "credentials.json");
 
 #if UNITY_EDITOR
-        PreBuildScript1.GenerateCredsFile();
 
         LoadCredentials();
         audioPlayer = GetComponent<AudioPlayer>();
 #endif
 
 #if UNITY_ANDROID
-        PreBuildScript1.GenerateCredsFile();
+;
         Debug.Log("credspath runs in Android watson.");
 
         StartCoroutine(
