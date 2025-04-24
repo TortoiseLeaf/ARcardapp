@@ -1,4 +1,4 @@
-#if UNITY_EDITOR
+/*#if UNITY_EDITOR
 using System;
 using System.IO;
 using UnityEditor;
@@ -47,3 +47,4 @@ public class PreBuildScript : IPreprocessBuildWithReport
 
 }
 #endif
+*/
