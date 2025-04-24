@@ -10,8 +10,9 @@ public class LinkedInAPI : MonoBehaviour
 
     private ProxycurlCredentials credentials;
     private string credentialsFilePath;
-    //public static ConfigLoader configLoader;
+    
     private string jsonFilePath;
+    
 
     void Awake()
     {
@@ -27,12 +28,13 @@ public class LinkedInAPI : MonoBehaviour
 
         credentialsFilePath = Path.Combine(Application.streamingAssetsPath, "credentials.json");
         Debug.Log("credspath runs in Android");
+        LoadProductionCredentials();
         StartCoroutine(
                 LoadCredsAndroid());
         jsonFilePath = Path.Combine(Application.persistentDataPath, "LinkedInProfile.json");
 #endif
 
-        LoadProductionCredentials();
+        
 
     }
 

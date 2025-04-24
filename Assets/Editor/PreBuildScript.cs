@@ -2,11 +2,15 @@
 using System;
 using System.IO;
 using UnityEditor;
+using UnityEditor.Build;
+using UnityEditor.Build.Reporting;
 using UnityEngine;
 
-public class PreBuildScript
+public class PreBuildScript : IPreprocessBuildWithReport
 {
-    public static void GenerateCredsFile()
+    public int callbackOrder => 0;
+
+    public void OnPreprocessBuild(BuildReport report)
     {
         try
         {
@@ -27,6 +31,7 @@ public class PreBuildScript
                         $"{{ \"_watsonApiUrl\": \"{_watsonApiUrl}\" }}";
 
                 File.WriteAllText(credsPath, json);
+                AssetDatabase.Refresh();
                 Debug.Log("Config file generated at: " + credsPath);
             }
             else
@@ -39,5 +44,6 @@ public class PreBuildScript
             Debug.LogError("failed Prebuildscript: " + e);
         }
     }
+
 }
 #endif
