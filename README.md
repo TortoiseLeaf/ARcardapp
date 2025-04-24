@@ -38,7 +38,7 @@ install the latest version from `Link TBD`
 Open the application on your phone and scan this target image:
 
 
-![target-img](https://github.com/TortoiseLeaf/ARcardapp/blob/docs-imgs/docs-imgs/target-img.jpg?raw=true)
+![target-img](https://github.com/TortoiseLeaf/ARcardapp/blob/docs-imgs/docs-imgs/trgt-img.png?raw=true)
 
 
 This should produce the AR UI like so:

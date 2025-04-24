@@ -10,8 +10,6 @@ public class WatsonTTS : MonoBehaviour
 {
     private WatsonCredentials watsonCredentials;
     private string credentialsFilePath;
-   
-
     public AudioPlayer audioPlayer;
 
     void Awake()
@@ -25,11 +23,14 @@ public class WatsonTTS : MonoBehaviour
 #endif
 
 #if UNITY_ANDROID
+;
+        Debug.Log("credspath runs in Android watson.");
 
         StartCoroutine(
                 LoadAndroidCreds());
         audioPlayer = GetComponent<AudioPlayer>();
 #endif
+
 
     }
 
@@ -37,6 +38,7 @@ public class WatsonTTS : MonoBehaviour
     {
         if (credentialsFilePath.Contains("://") || credentialsFilePath.Contains(":///"))
         {
+            Debug.Log("credsloader function in watson web request fires");
 
             UnityWebRequest www = UnityWebRequest.Get(credentialsFilePath);
             www.SetRequestHeader("Content-Type", "text/plain; charset=utf-8");

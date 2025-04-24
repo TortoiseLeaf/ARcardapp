@@ -10,7 +10,7 @@ public class LinkedInAPI : MonoBehaviour
 
     private ProxycurlCredentials credentials;
     private string credentialsFilePath;
-    //public static ConfigLoader configLoader;
+    
     private string jsonFilePath;
 
     void Awake()
@@ -24,22 +24,23 @@ public class LinkedInAPI : MonoBehaviour
 #endif
 
 #if UNITY_ANDROID
-
         credentialsFilePath = Path.Combine(Application.streamingAssetsPath, "credentials.json");
-        Debug.Log("credspath runs in Android");
+        Debug.Log("credspath runs in Android.");
         StartCoroutine(
                 LoadCredsAndroid());
         jsonFilePath = Path.Combine(Application.persistentDataPath, "LinkedInProfile.json");
 #endif
 
+        
+
     }
 
-    // take this into another file, add credsfilepath as param and use it in both linkedin and watson scripts?
-    // how to divide the load?
+
     private IEnumerator LoadCredsAndroid()
     {
         if (credentialsFilePath.Contains("://") || credentialsFilePath.Contains(":///"))
         {
+            Debug.Log("credsloader function in linkeeidn web request fires");
 
             UnityWebRequest www = UnityWebRequest.Get(credentialsFilePath);
             www.SetRequestHeader("Content-Type", "text/plain; charset=utf-8");
@@ -56,6 +57,7 @@ public class LinkedInAPI : MonoBehaviour
             {
                 string json = www.downloadHandler.text;
                 credentials = JsonUtility.FromJson<ProxycurlCredentials>(json);
+                Debug.Log("creds loaded android linkedin: " + credentials._baseUrlLinkedIn);
 
                 yield return credentials;
 
@@ -88,11 +90,11 @@ public class LinkedInAPI : MonoBehaviour
 
     public void FetchLinkedInProfile()
     {
-        Debug.Log("creds try in api: " + credentials._apiKeyLinkedIn);
+        Debug.Log("creds try in fecthLinkedinProfile: " + credentials._baseUrlLinkedIn);
 
         if (credentials._apiKeyLinkedIn == null || string.IsNullOrEmpty(credentials._apiKeyLinkedIn))
         {
-            Debug.LogError("API credentials are not set!");
+            Debug.LogError("creds API credentials are not set!");
             return;
         }
 
@@ -151,7 +153,7 @@ public class LinkedInAPI : MonoBehaviour
     }
 
 
-    // necessary to load the data objects into watson?
+    // this worked in android so why not prod?
     public LinkedInClasses LoadJsonFile()
     {
         try

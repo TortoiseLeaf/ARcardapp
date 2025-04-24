@@ -39,7 +39,7 @@ public class LinkedInDataHandler : MonoBehaviour
 
         if (json != null)
         {
-            FindObjectOfType<WatsonTTS>().SynthesizeAndPlayRequest(new WatsonRequest(json.full_name + "is some boy", "Interest"));
+            FindObjectOfType<WatsonTTS>().SynthesizeAndPlayRequest(new WatsonRequest(json.full_name + "Most recently worked at " + json.workHistory[0].company, "as " + json.workHistory[0].title));
         }
         else
         {
