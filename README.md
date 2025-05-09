@@ -1,5 +1,8 @@
 # ARcardapp README
 
+## Dev Environment
+Unity 2022.3.49f1
+
 ## Contribution guidelines
 
 Clone the repository.
